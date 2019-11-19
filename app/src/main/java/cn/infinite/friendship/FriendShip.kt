@@ -22,7 +22,7 @@ class FriendShip : View {
     private val mWavePaint = Paint().apply {
         color = Color.parseColor("#00a1ff")
         strokeWidth = 5f
-        style = Paint.Style.STROKE
+        style = Paint.Style.FILL_AND_STROKE
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -61,6 +61,10 @@ class FriendShip : View {
                     mWaveWidth  + offset+mWaveWidth.times(i), measuredHeight / 2.toFloat()
                 )
             }
+        mPath.moveTo(width.toFloat(),height.toFloat())
+        mPath.moveTo(0f,height.toFloat())
+        mPath.moveTo(0f + offset, measuredHeight / 2.toFloat())
+        mPath.close()
         }
 
 }
