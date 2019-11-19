@@ -50,7 +50,7 @@ class FriendShip : View {
         mPath.reset()
         mPath.moveTo(0f + offset, measuredHeight / 2.toFloat())
 
-        for (i in 1 until num*2) {
+        for (i in 0 .. num*2) {
                 mPath.quadTo(
                     mWaveWidth / 4 + offset+mWaveWidth.times(i), mWaveHeight + measuredHeight / 2,
                     mWaveWidth/2 + offset+mWaveWidth.times(i), measuredHeight / 2.toFloat()
