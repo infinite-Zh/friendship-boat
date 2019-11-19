@@ -1,5 +1,6 @@
 package cn.infinite.friendship
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -7,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.LinearInterpolator
 
 /**
  * @author bug小能手
@@ -17,7 +19,7 @@ class FriendShip : View {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, i: Int) : super(context, attrs, i)
 
-    private var mWaveWidth = 500f
+    private var mWaveWidth = 900f
     private var mWaveHeight = 150f
     private val mWavePaint = Paint().apply {
         color = Color.parseColor("#00a1ff")
@@ -27,7 +29,20 @@ class FriendShip : View {
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        offset=-w.toFloat()
+        startAnim()
+    }
+
+    private fun startAnim(){
+        val valueAnim=ValueAnimator.ofFloat(-mWaveWidth,0f)
+        valueAnim.duration=1000
+        valueAnim.repeatMode=ValueAnimator.RESTART
+        valueAnim.repeatCount=ValueAnimator.INFINITE
+        valueAnim.interpolator=LinearInterpolator()
+        valueAnim.addUpdateListener {
+            offset=it.animatedValue as Float
+            invalidate()
+        }
+        valueAnim.start()
     }
 
     private var mPath = Path()
@@ -36,12 +51,6 @@ class FriendShip : View {
         super.onDraw(canvas)
         generatePath()
         canvas?.drawPath(mPath, mWavePaint)
-
-        offset += 2f
-        if (offset== 0f) {
-            offset = -measuredWidth.toFloat()
-        }
-        invalidate()
     }
 
     private fun generatePath() {
@@ -50,7 +59,7 @@ class FriendShip : View {
         mPath.reset()
         mPath.moveTo(0f + offset, measuredHeight / 2.toFloat())
 
-        for (i in 0 .. num*2) {
+        for (i in 0 .. num) {
                 mPath.quadTo(
                     mWaveWidth / 4 + offset+mWaveWidth.times(i), mWaveHeight + measuredHeight / 2,
                     mWaveWidth/2 + offset+mWaveWidth.times(i), measuredHeight / 2.toFloat()
