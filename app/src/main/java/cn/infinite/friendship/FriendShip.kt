@@ -17,8 +17,8 @@ class FriendShip : View {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, i: Int) : super(context, attrs, i)
 
-    private var mWaveWidth = 100f
-    private var mWaveHeight = 100f
+    private var mWaveWidth = 500f
+    private var mWaveHeight = 150f
     private val mWavePaint = Paint().apply {
         color = Color.parseColor("#00a1ff")
         strokeWidth = 5f
@@ -37,7 +37,7 @@ class FriendShip : View {
         generatePath()
         canvas?.drawPath(mPath, mWavePaint)
 
-        offset += 1f
+        offset += 2f
         if (offset== 0f) {
             offset = -measuredWidth.toFloat()
         }
@@ -46,19 +46,19 @@ class FriendShip : View {
 
     private fun generatePath() {
 
-        val num = measuredWidth / (mWaveWidth.times(2)).toInt() + 1
+        val num = measuredWidth / (mWaveWidth).toInt() + 1
         mPath.reset()
         mPath.moveTo(0f + offset, measuredHeight / 2.toFloat())
 
-        for (i in 1 until num.times(2)) {
+        for (i in 1 until num*2) {
                 mPath.quadTo(
-                    mWaveWidth.times(i) / 2 + offset, mWaveHeight + measuredHeight / 2,
-                    mWaveWidth.times(i) + offset, measuredHeight / 2.toFloat()
+                    mWaveWidth / 4 + offset+mWaveWidth.times(i), mWaveHeight + measuredHeight / 2,
+                    mWaveWidth/2 + offset+mWaveWidth.times(i), measuredHeight / 2.toFloat()
                 )
 
                 mPath.quadTo(
-                    3 * mWaveWidth.times(i) / 2 + offset, measuredHeight / 2 - mWaveHeight,
-                    mWaveWidth.times(i) * 2 + offset, measuredHeight / 2.toFloat()
+                    3 * mWaveWidth / 4 + offset+mWaveWidth.times(i), measuredHeight / 2 - mWaveHeight,
+                    mWaveWidth  + offset+mWaveWidth.times(i), measuredHeight / 2.toFloat()
                 )
             }
         }
