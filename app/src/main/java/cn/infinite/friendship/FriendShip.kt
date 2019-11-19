@@ -2,10 +2,7 @@ package cn.infinite.friendship
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -19,12 +16,20 @@ class FriendShip : View {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, i: Int) : super(context, attrs, i)
 
-    private var mWaveWidth = 900f
-    private var mWaveHeight = 150f
+    private var mWaveWidth = 1500f
+    private var mWaveHeight = 120f
     private val mWavePaint = Paint().apply {
-        color = Color.parseColor("#00a1ff")
+        color = Color.parseColor("#8f00a1ff")
         strokeWidth = 5f
-        style = Paint.Style.STROKE
+        style = Paint.Style.FILL_AND_STROKE
+
+    }
+
+    private val mShiftWavePaint = Paint().apply {
+        color = Color.parseColor("#3f00a1ff")
+        strokeWidth = 5f
+        style = Paint.Style.FILL_AND_STROKE
+
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -33,8 +38,8 @@ class FriendShip : View {
     }
 
     private fun startAnim(){
-        val valueAnim=ValueAnimator.ofFloat(-mWaveWidth,0f)
-        valueAnim.duration=1000
+        val valueAnim=ValueAnimator.ofFloat(-mWaveWidth*2,-mWaveWidth)
+        valueAnim.duration=600
         valueAnim.repeatMode=ValueAnimator.RESTART
         valueAnim.repeatCount=ValueAnimator.INFINITE
         valueAnim.interpolator=LinearInterpolator()
@@ -49,17 +54,18 @@ class FriendShip : View {
     private var offset = 0f
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        generatePath()
-        canvas?.drawPath(mPath, mWavePaint)
+        generatePath(canvas!!)
+//        canvas?.drawPath(mPath, mWavePaint)
     }
 
-    private fun generatePath() {
+    private val shiftWaveMatrix=Matrix()
+    private fun generatePath(canvas: Canvas) {
 
         val num = measuredWidth / (mWaveWidth).toInt() + 1
         mPath.reset()
         mPath.moveTo(0f + offset, measuredHeight / 2.toFloat())
 
-        for (i in 0 .. num) {
+        for (i in 0 .. num*2) {
                 mPath.quadTo(
                     mWaveWidth / 4 + offset+mWaveWidth.times(i), mWaveHeight + measuredHeight / 2,
                     mWaveWidth/2 + offset+mWaveWidth.times(i), measuredHeight / 2.toFloat()
@@ -69,7 +75,22 @@ class FriendShip : View {
                     3 * mWaveWidth / 4 + offset+mWaveWidth.times(i), measuredHeight / 2 - mWaveHeight,
                     mWaveWidth  + offset+mWaveWidth.times(i), measuredHeight / 2.toFloat()
                 )
+
             }
-        }
+
+        mPath.rLineTo(0f,measuredHeight/2.toFloat())
+        mPath.lineTo(-2*mWaveWidth,measuredHeight.toFloat())
+        mPath.lineTo(-2*mWaveWidth+offset, measuredHeight/2.toFloat())
+        mPath.close()
+        canvas.drawPath(mPath,mWavePaint)
+
+        shiftWaveMatrix.reset()
+        shiftWaveMatrix.postTranslate(mWaveWidth*0.6.toFloat(),0f)
+        mPath.transform(shiftWaveMatrix)
+        mPath.close()
+        canvas.drawPath(mPath,mShiftWavePaint)
+
+
+    }
 
 }
