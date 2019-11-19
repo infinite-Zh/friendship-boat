@@ -59,13 +59,15 @@ class FriendShip : View {
     }
 
     private val shiftWaveMatrix=Matrix()
+
+    private val pathMeasure=PathMeasure()
     private fun generatePath(canvas: Canvas) {
 
-        val num = measuredWidth / (mWaveWidth).toInt() + 1
+        val num = measuredWidth / (mWaveWidth).toInt() + 2
         mPath.reset()
         mPath.moveTo(0f + offset, measuredHeight / 2.toFloat())
 
-        for (i in 0 .. num*2) {
+        for (i in 0 .. num) {
                 mPath.quadTo(
                     mWaveWidth / 4 + offset+mWaveWidth.times(i), mWaveHeight + measuredHeight / 2,
                     mWaveWidth/2 + offset+mWaveWidth.times(i), measuredHeight / 2.toFloat()
@@ -82,6 +84,9 @@ class FriendShip : View {
         mPath.lineTo(-2*mWaveWidth,measuredHeight.toFloat())
         mPath.lineTo(-2*mWaveWidth+offset, measuredHeight/2.toFloat())
         mPath.close()
+//        pathMeasure.setPath(mPath,false)
+//        pathMeasure.
+
         canvas.drawPath(mPath,mWavePaint)
 
         shiftWaveMatrix.reset()
