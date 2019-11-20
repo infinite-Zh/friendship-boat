@@ -18,7 +18,7 @@ class FriendShip : View {
 
     private var mWaveWidth = 1500f
     private var mWaveHeight = 120f
-    private var shiftOffset = 900f
+    private var shiftOffset = mWaveWidth*0.5.toFloat()
     private val mWavePaint = Paint().apply {
         color = Color.parseColor("#8f00a1ff")
         strokeWidth = 5f
@@ -39,8 +39,8 @@ class FriendShip : View {
     }
 
     private fun startAnim() {
-        val valueAnim = ValueAnimator.ofFloat(-mWaveWidth - shiftOffset, -shiftOffset)
-        valueAnim.duration = 600
+        val valueAnim = ValueAnimator.ofFloat(-mWaveWidth-shiftOffset , - shiftOffset)
+        valueAnim.duration = 800
         valueAnim.repeatMode = ValueAnimator.RESTART
         valueAnim.repeatCount = ValueAnimator.INFINITE
         valueAnim.interpolator = LinearInterpolator()
@@ -69,35 +69,32 @@ class FriendShip : View {
 
         val num = ((measuredWidth + shiftOffset) / mWaveWidth).toInt() + 1
         mPath.reset()
-        mPath.moveTo(0f + offset, (measuredHeight-mWaveHeight*2) / 2.toFloat())
-
+        mPath.moveTo(0f + offset-shiftOffset, (measuredHeight - mWaveHeight * 2) / 2.toFloat())
         for (i in 0..num) {
             mPath.quadTo(
-                mWaveWidth / 4 + offset + mWaveWidth.times(i), mWaveHeight + measuredHeight / 2,
-                mWaveWidth / 2 + offset + mWaveWidth.times(i), measuredHeight / 2.toFloat()
+                mWaveWidth / 4 + offset-shiftOffset + mWaveWidth.times(i), mWaveHeight + measuredHeight / 2,
+                mWaveWidth / 2 + offset-shiftOffset + mWaveWidth.times(i), measuredHeight / 2.toFloat()
             )
 
             mPath.quadTo(
-                3 * mWaveWidth / 4 + offset + mWaveWidth.times(i), measuredHeight / 2 - mWaveHeight,
-                mWaveWidth + offset + mWaveWidth.times(i), measuredHeight / 2.toFloat()
+                3 * mWaveWidth / 4 + offset-shiftOffset + mWaveWidth.times(i), measuredHeight / 2 - mWaveHeight,
+                mWaveWidth + offset-shiftOffset + mWaveWidth.times(i), measuredHeight / 2.toFloat()
             )
-
         }
 
         mPath.rLineTo(0f, measuredHeight / 2.toFloat())
-        mPath.lineTo(-2 * mWaveWidth, measuredHeight.toFloat())
-        mPath.lineTo(-2 * mWaveWidth + offset, measuredHeight / 2.toFloat())
+        mPath.lineTo(-2 * mWaveWidth+ offset-shiftOffset, measuredHeight.toFloat())
+        mPath.lineTo(-2 * mWaveWidth + offset-shiftOffset, measuredHeight / 2.toFloat())
+
         mPath.close()
         pathMeasure.setPath(mPath, false)
-
         canvas.drawPath(mPath, mWavePaint)
 
 
-//        getCenterPos(mPath,canvas)
         canvas.drawBitmap(
             boat,
             (measuredWidth - boat.width) / 2.toFloat(),
-            measuredHeight/2 - boat.height + getCenterPos(mPath).toFloat(),
+            measuredHeight / 2 - boat.height + getCenterPos(mPath).toFloat(),
             null
         )
 
@@ -111,11 +108,16 @@ class FriendShip : View {
 
     }
 
-    private fun getCenterPos(path: Path) :Int{
-        val region=Region(measuredWidth/2,measuredHeight/2-mWaveHeight.toInt(),measuredWidth/2+100,measuredHeight/2+mWaveHeight.toInt())
-        val newRegin=Region()
-        val res=newRegin.setPath(path,region)
-        val rect=newRegin.bounds
-        return rect.top-measuredHeight/2
+    private fun getCenterPos(path: Path): Int {
+        val region = Region(
+            measuredWidth / 2,
+            measuredHeight / 2 - mWaveHeight.toInt(),
+            measuredWidth / 2 + 100,
+            measuredHeight / 2 + mWaveHeight.toInt()
+        )
+        val newRegin = Region()
+        val res = newRegin.setPath(path, region)
+        val rect = newRegin.bounds
+        return rect.top - measuredHeight / 2
     }
 }
