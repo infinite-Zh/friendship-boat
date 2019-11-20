@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 
@@ -98,7 +97,7 @@ class FriendShip : View {
         canvas.drawBitmap(
             boat,
             (measuredWidth - boat.width) / 2.toFloat(),
-            measuredHeight/2 - boat.height + getCenterPos(mPath,canvas).toFloat(),
+            measuredHeight/2 - boat.height + getCenterPos(mPath).toFloat(),
             null
         )
 
@@ -112,25 +111,11 @@ class FriendShip : View {
 
     }
 
-    val pos = floatArrayOf(0f, 0f)
-    val tan = floatArrayOf(0f, 0f)
-    private fun getCenterPos(path: Path,canvas: Canvas) :Int{
-//        pathMeasure.setPath(path, false)
-//        val length = pathMeasure.length.toInt()
-//        for (i in 0 until length) {
-//            pathMeasure.getPosTan(i.toFloat(), pos, tan)
-//            if (pos[0] == measuredWidth / 2.toFloat()) {
-//                Log.e("center", "x=${pos[0]},y=${pos[1]}")
-//                break
-//            }
-//        }
+    private fun getCenterPos(path: Path) :Int{
         val region=Region(measuredWidth/2,measuredHeight/2-mWaveHeight.toInt(),measuredWidth/2+100,measuredHeight/2+mWaveHeight.toInt())
         val newRegin=Region()
         val res=newRegin.setPath(path,region)
         val rect=newRegin.bounds
-//        Log.e("regin","res=$res,top=${newRegin.bounds.top},bottom=${newRegin.bounds.bottom}")
-
-//        canvas.drawRect(newRegin.bounds,mWavePaint)
         return rect.top-measuredHeight/2
     }
 }
