@@ -32,55 +32,21 @@ class TestView: View {
     private val pos= floatArrayOf(0f,0f)
     private val tan= floatArrayOf(0f,0f)
     private val region=Region(100,0,300,400)
+    private val bitmapMatrix=Matrix()
+
+    private val boat = BitmapFactory.decodeResource(resources, R.mipmap.ic_boat)
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 //        path.moveTo(0f,0f)
 //        path.lineTo(100f,100f)
         canvas?.apply {
+            drawPoint(200f,200f,pointPaint)
+            translate(200f,200f)
+            bitmapMatrix.setRotate(
+                -90f,boat.width/2.toFloat(),boat.height/2.toFloat()
+            )
+            drawBitmap(boat,bitmapMatrix,null)
 
-            path.reset()
-
-            path.moveTo(100f,100f)
-
-            path.quadTo(200f,200f,400f,200f)
-
-            drawCircle(200f,200f,10f,pathPaint)
-            drawCircle(400f,200f,10f,pathPaint)
-
-            path.rLineTo(0f,200f)
-            path.rLineTo(-400f,0f)
-            path.rLineTo(0f,-300f)
-            drawPath(path,pathPaint)
-
-            val rect=region.bounds
-
-            drawRect(rect,regionPaint)
-
-            val newRegion=Region()
-
-            newRegion.setPath(path,region)
-            regionPaint.color=Color.RED
-            val newPath=newRegion.boundaryPath
-            drawPath(newPath,regionPaint)
-
-            pathMeasure.setPath(newPath,false)
-            val l=pathMeasure.length
-
-            for (i in 0 until l.toInt()){
-                pathMeasure.getPosTan(i.toFloat(),pos,tan)
-                log("x=${tan[0]},y=${tan[1]}")
-                if (i%20==0) {
-                    drawCircle(pos[0], pos[1], 10f, pathPaint)
-                }
-            }
-
-//            log("x=${tan[0]},y=${tan[1]}")
-//
-//            log("degree=${atan2(tan[1],tan[0])*180/ PI}")
-
-
-
-            drawPoint(pos[0],pos[1],pointPaint)
         }
 
 

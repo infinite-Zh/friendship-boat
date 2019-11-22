@@ -7,7 +7,9 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
+import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.atan2
 
 /**
  * @author bug小能手
@@ -68,7 +70,7 @@ class FriendShip : View {
 
     private fun startAnim() {
         val valueAnim = ValueAnimator.ofFloat(-mWaveWidth - shiftOffset, -shiftOffset)
-        valueAnim.duration = 2000
+        valueAnim.duration = 600
         valueAnim.repeatMode = ValueAnimator.RESTART
         valueAnim.repeatCount = ValueAnimator.INFINITE
         valueAnim.interpolator = LinearInterpolator()
@@ -88,11 +90,13 @@ class FriendShip : View {
         canvas?.apply {
 
             translate(offset, 0f)
+            drawPath(mPath, mWavePaint)
+
             helperPath.reset()
-            helperPath.moveTo(measuredWidth / 2  - offset, 0f)
+            helperPath.moveTo(measuredWidth / 2 - offset, 0f)
             helperPath.rLineTo(0f, measuredHeight.toFloat() / 2 + mWaveHeight)
             helperPath.rLineTo(-40f, 0f)
-            helperPath.rLineTo(0f, -measuredHeight.toFloat() - mWaveHeight )
+            helperPath.rLineTo(0f, -measuredHeight.toFloat() - mWaveHeight)
             helperPath.close()
 //            drawPath(helperPath, mHelperPaint)
             helperPath.op(mPath, Path.Op.INTERSECT)
@@ -100,21 +104,30 @@ class FriendShip : View {
             pathMeasure.setPath(helperPath, false)
 
             val l = pathMeasure.length
-            pathMeasure.getPosTan(l - 20, pos, tan)
+            pathMeasure.getPosTan(l - 30, pos, tan)
             pathMeasure.getMatrix(
-                l - 20,
+                l - 30,
                 pathMatrix,
                 PathMeasure.POSITION_MATRIX_FLAG or PathMeasure.TANGENT_MATRIX_FLAG
             )
+            pathMatrix.postTranslate(-boat.width / 2.toFloat(), -boat.height.toFloat())
 
-            pathMatrix.postTranslate(-boat.width/2.toFloat(),-boat.height.toFloat())
-            drawBitmap(boat, pathMatrix, null)
+            //偶尔会出现角度是-90度的问题
+            if (abs(atan2(tan[1], tan[0]) * 180 / PI) < 90) {
+                drawBitmap(boat, pathMatrix, null)
+            }
+//            if (abs(atan2(tan[1], tan[0]) * 180 / PI) > 50) {
+//                Log.e("error", pathMatrix.toShortString())
+//                Log.e("tan", "tanx=${tan[0]} tany=${tan[1]}")
+//                Log.e("offset", "offset=$offset")
+//                Log.e("degree", "degree=${atan2(tan[1], tan[0]) * 180 / PI}")
+//            }
 
 //            drawPoint(pos[0], pos[1], mPointPaint)
 //
 //            drawPath(helperPath, mResultrPaint)
 
-            drawPath(mPath, mWavePaint)
+
 
             translate(shiftOffset, 0f)
             drawPath(mPath, mShiftWavePaint)
