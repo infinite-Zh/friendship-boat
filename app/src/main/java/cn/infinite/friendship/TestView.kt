@@ -37,15 +37,6 @@ class TestView: View {
 //        path.moveTo(0f,0f)
 //        path.lineTo(100f,100f)
         canvas?.apply {
-//            drawPath(path,pathPaint)
-//            pathMeasure.setPath(path,false)
-//            log(pathMeasure.length.toString())
-//
-//            pathMeasure.getPosTan(10f,pos,tan)
-//
-//            log("x=${tan[0]},y=${tan[1]}")
-//
-//            log("degree=${atan2(tan[1],tan[0])*180/ PI}")
 
             path.reset()
 
@@ -61,17 +52,6 @@ class TestView: View {
             path.rLineTo(0f,-300f)
             drawPath(path,pathPaint)
 
-            pathMeasure.setPath(path,false)
-            log(pathMeasure.length.toString())
-
-            pathMeasure.getPosTan(0f,pos,tan)
-
-//            log("x=${tan[0]},y=${tan[1]}")
-//
-//            log("degree=${atan2(tan[1],tan[0])*180/ PI}")
-
-            drawPath(path,pathPaint)
-
             val rect=region.bounds
 
             drawRect(rect,regionPaint)
@@ -79,19 +59,24 @@ class TestView: View {
             val newRegion=Region()
 
             newRegion.setPath(path,region)
-
-//            drawRect(newRegion.bounds,regionPaint)
-
             regionPaint.color=Color.RED
             val newPath=newRegion.boundaryPath
             drawPath(newPath,regionPaint)
 
             pathMeasure.setPath(newPath,false)
-            pathMeasure.getPosTan(50f,pos,tan)
+            val l=pathMeasure.length
 
-            log("x=${tan[0]},y=${tan[1]}")
+            for (i in 0 until l.toInt()){
+                pathMeasure.getPosTan(i.toFloat(),pos,tan)
+                log("x=${tan[0]},y=${tan[1]}")
+                if (i%20==0) {
+                    drawCircle(pos[0], pos[1], 10f, pathPaint)
+                }
+            }
 
-            log("degree=${atan2(tan[1],tan[0])*180/ PI}")
+//            log("x=${tan[0]},y=${tan[1]}")
+//
+//            log("degree=${atan2(tan[1],tan[0])*180/ PI}")
 
 
 
